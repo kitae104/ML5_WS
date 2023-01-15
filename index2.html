@@ -33,48 +33,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/addons/p5.sound.min.js"></script>
     <!-- ml5 -->
     <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
-    <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+
     <title>ML5 테스트</title>
-
-    <script>
-      function run(){
-        const code = editor.doc.getValue();        
-        var queryString = $("form[name=runForm]").serialize();        
- 
-        $.ajax({
-            type : 'post',
-            url : '/run',
-            data : {data:code},
-            //dataType : 'json',
-            error: function(xhr, status, error){
-              
-              alert("오류 발생");
-            },
-            success : function(data){
-                alert(data + "동적으로 결과 가져오기");
-                
-                /* (function() {
-                  alert("수행 확인!!");
-                  var my_head = document.getElementsByTagName('head')[0];
-                  var script = document.createElement("script");
-                  script.type = "text/javascript";
-                  script.defer = false;        
-                  script.src = "js/sketch.js";
-                  script.onload = function(){
-                    alert("BBBB");
-                  };
-                  document.body.appendChild(script);      
-                })(); */
-                location.href = "/result";
-            }
-        });          
-      }
-
-      function consoleclear(){          
-        editor.getDoc().setValue('');      
-      }
-    </script>    
-
   </head>
   <body>    
     <div class="container" style="float: none; margin: 100 auto">
@@ -82,7 +42,21 @@
         <h2><b>ML5 실행 테스트</b></h2>
         <p>ml5.js를 이용한 머신러닝 테스트 페이지 입니다.</p>
         <form method="POST" action="/run" name="runForm" id="runForm">
-          <textarea class="Codemirror" id="program" name="program">
+          <textarea class="Codemirror" id="code">
+console.log('ml5 version:', ml5.version);
+
+function setup() {
+  let canvas = createCanvas(400, 400);  
+  canvas.parent('sketch-holder');
+  
+  textAlign(CENTER, CENTER);
+}
+
+function draw() {
+  background(100);
+  textSize(width/4);
+  text(ml5.version,width/4, width/2);
+}
           </textarea>
         </form>
         <div class="mt-2">
@@ -92,12 +66,23 @@
         </div>
 
         <div class="mt-4"></div>
-        <div>[Preview] :</div>              
-        <div id="sketch-holder"></div>             
+        <div>[Preview] :</div>      
+        <!-- <script src="/js/sketch.js"></script>  --> 
+        <div id="sketch-holder"></div>      
+        <script>
+          function setup() {
+            let canvas = createCanvas(400, 400);  
+            canvas.parent('sketch-holder');                  
+          }
+
+          function draw() {
+            background(100);            
+          }
+        </script>   
       </div>
     </div>    
     <script type="text/javascript">
-      const editor = CodeMirror.fromTextArea(document.getElementById("program"), {
+      const editor = CodeMirror.fromTextArea(document.getElementById("code"), {
         autofocus: true,
         mode:"javascript",
         theme: "dracula",
@@ -114,6 +99,22 @@
         foldGutter: true,
         gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
       });      
+    </script>
+    <script>
+      function run(){
+        const code = editor.doc.getValue();        
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.aync = true;        
+        script.textContent = code;
+        
+        document.body.appendChild(script);             
+      }
+
+      function consoleclear(){          
+        editor.getDoc().setValue('');      
+      }
     </script>    
+    
   </body>
 </html>

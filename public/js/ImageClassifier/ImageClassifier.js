@@ -2,7 +2,7 @@
 let img, classifier;
 
 function preload(){
-  img = loadImage('/images/머그컵.jpg');
+  img = loadImage('images/머그컵.jpg');
   classifier = ml5.imageClassifier('MobileNet', modelReady);
 }
 

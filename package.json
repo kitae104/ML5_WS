@@ -1,0 +1,25 @@
+{
+  "name": "ml5_ws",
+  "version": "1.0.0",
+  "description": "ml5.js 를 이용한 머신러닝",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kitae104/ML5_WS.git"
+  },
+  "author": "kim ki tae",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kitae104/ML5_WS/issues"
+  },
+  "homepage": "https://github.com/kitae104/ML5_WS#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
