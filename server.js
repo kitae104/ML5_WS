@@ -42,7 +42,6 @@ app.post('/run', (req, res) => {
 });
 
 app.get('/result', function(req, res){
-	console.log("reuslt");
 	res.sendFile(__dirname + "/result.html");
 });
 
