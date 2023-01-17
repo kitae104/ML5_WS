@@ -17,34 +17,32 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.get('/', function (req, res) {
   res.sendFile(__dirname + "/index.html");
 });
-
-app.post('/run', (req, res) => {  
+ 
+// 페이지를 찾을 수 없음 오류 처리
+app.post('/run', (req, res) => { 
 	var code = req.body.data;
-  
-	console.log("code : " + code);
-  
-	fs.writeFile('public/js/sketch.js', code)
-	.then(() => {
-	  return fs.readFile('public/js/sketch.js')
-	})
-	.then((data) => {
-	  res.setHeader("Access-Control-Allow-Origin", "*");
-	//   res.setHeader("Access-Control-Allow-Credentials", "true");
-	  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-	  res.setHeader("Access-Control-Max-Age", "3600");
-	  res.setHeader("Access-Control-Allow-Headers", 
-	  				"Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization");
-	  res.send("OK");  
-	})
-	.catch((err) => {
-	  console.error(err);
-	});	
+  var html = 
+	  '<!DOCTYPE html>' +
+		'<html lang="en">' +
+		'	<head>' +
+		'		<title>Getting Started with ml5.js</title>' +
+		'		<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+		
+		'		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/p5.min.js"></script>' +
+		'		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/addons/p5.sound.min.js"></script>' +
+		
+		'		<script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>' +
+		'	</head>' +
+		
+		'	<body>' +
+		'		<h2>머신러닝 체험 페이지</h2>' +
+		'		<script>' + code +
+				
+		'		</script>' +
+		'	</body>' +
+		'</html>'
+	console.log("html : " + html);
+	res.send(html);
 });
-
-app.get('/result', function(req, res){
-	res.sendFile(__dirname + "/result.html");
-});
-
-app.listen(3000, function () {
-  console.log("3000번 서버 실행....");
-});
+ 
+app.listen(3000, function() {});

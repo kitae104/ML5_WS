@@ -1,36 +1,29 @@
-// 드래그&드롭으로 분류하기
-let classifier;
-let dropBox;
-let img = 0;
+// 동물, 사물 분류하기
+let img, classifier;
 
-function preload() {
-  classifier = ml5.imageClassifier('MobileNet');
+function preload(){
+  img = loadImage('images/머그컵.jpg');
+  classifier = ml5.imageClassifier('MobileNet', modelReady);
 }
 
 function setup() {
-  dropBox = createCanvas(400, 400);
-  background(100);
-  dropBox.drop(afterDrop);
+  createCanvas(img.width, img.height+30);
+  background(0);
+  image(img, 0, 0);
 }
 
-function afterDrop(file){
-  img = loadImage(file.data,imageReady);
+function modelReady(){
+  console.log('MobileNet 모델 불러오기 완료');
   classifier.classify(img, gotResult);
 }
 
-function imageReady(){
-  resizeCanvas(img.width, img.height+60);
-  background(100);
-  image(img,0,0);
-}
-
-function gotResult(error, results) {
-  if (error) {
-    console.error(error);
+function gotResult(err, results){
+  if(err){
+    console.error(err);
+    return;
   }
-  console.log(results);
-  fill(255);
-  textSize(20);
-  text('분석 : '+results[0].label,0,height-30);
-  text('정확도 : '+nf(results[0].confidence*100,0,1)+'%',0,height-10);
+  
+  fill(255, 255, 0);
+  textSize(24);
+  text(results[0].label, 2, height-5);
 }          
