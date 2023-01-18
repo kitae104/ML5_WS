@@ -28,13 +28,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/addon/hint/show-hint.min.js" integrity="sha512-yhmeAerubMLaGAsyS7sE8Oqub6GeTkBDQpkXo2JKHgg7JOCudQvcbDQc5rPxdl7MqcDusTJzSy+ODlyzAwETfQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="/css/theme/dracula.css" />
 
-    <!-- p5 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/addons/p5.sound.min.js"></script>
-    <!-- ml5 -->
-    <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
-
+    <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
     <title>ML5 테스트</title>
+
+    <script>
+      function consoleclear(){          
+        editor.getDoc().setValue('');      
+      }
+    </script>    
+
   </head>
   <body>    
     <div class="container" style="float: none; margin: 100 auto">
@@ -42,47 +44,22 @@
         <h2><b>ML5 실행 테스트</b></h2>
         <p>ml5.js를 이용한 머신러닝 테스트 페이지 입니다.</p>
         <form method="POST" action="/run" name="runForm" id="runForm">
-          <textarea class="Codemirror" id="code">
-console.log('ml5 version:', ml5.version);
-
-function setup() {
-  let canvas = createCanvas(400, 400);  
-  canvas.parent('sketch-holder');
-  
-  textAlign(CENTER, CENTER);
-}
-
-function draw() {
-  background(100);
-  textSize(width/4);
-  text(ml5.version,width/4, width/2);
-}
+          <textarea class="Codemirror" id="program" name="program">
+            
           </textarea>
-        </form>
+        
         <div class="mt-2">
-          <button class="btn btn-primary" id="run" onclick="run()">RUN</button>
-          <button class="btn btn-primary" id="consoleclear" onclick="consoleclear()">Clear</button>
-          <!-- <button class="btn btn-primary" id="clear" disabled>Clear All</button> -->
+          <input class="btn btn-primary" type="submit" value="Run"></input>             
+          <button class="btn btn-primary" id="consoleclear" onclick="consoleclear()">Clear</button>          
         </div>
-
+      </form>  
         <div class="mt-4"></div>
-        <div>[Preview] :</div>      
-        <!-- <script src="/js/sketch.js"></script>  --> 
-        <div id="sketch-holder"></div>      
-        <script>
-          function setup() {
-            let canvas = createCanvas(400, 400);  
-            canvas.parent('sketch-holder');                  
-          }
-
-          function draw() {
-            background(100);            
-          }
-        </script>   
+        <div>[Preview] :</div>              
+        <div id="sketch-holder"></div>             
       </div>
     </div>    
     <script type="text/javascript">
-      const editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+      const editor = CodeMirror.fromTextArea(document.getElementById("program"), {
         autofocus: true,
         mode:"javascript",
         theme: "dracula",
@@ -99,56 +76,6 @@ function draw() {
         foldGutter: true,
         gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
       });      
-    </script>
-    <script>
-      function run(){
-        var code = editor.doc.getValue();        
-        var result = '<script>' + code + '</script>';
-
-         
-      }
-
-      function consoleclear(){          
-        editor.getDoc().setValue('');      
-      }
     </script>    
-    <script>
-      // 드래그&드롭으로 분류하기
-let classifier;
-let dropBox;
-let img = 0;
-
-function preload() {
-  classifier = ml5.imageClassifier('MobileNet');
-}
-
-function setup() {
-  dropBox = createCanvas(400, 400);
-  background(100);
-  dropBox.drop(afterDrop);
-}
-
-function afterDrop(file){
-  img = loadImage(file.data,imageReady);
-  classifier.classify(img, gotResult);
-}
-
-function imageReady(){
-  resizeCanvas(img.width, img.height+60);
-  background(100);
-  image(img,0,0);
-}
-
-function gotResult(error, results) {
-  if (error) {
-    console.error(error);
-  }
-  console.log(results);
-  fill(255);
-  textSize(20);
-  text('분석 : '+results[0].label,0,height-30);
-  text('정확도 : '+nf(results[0].confidence*100,0,1)+'%',0,height-10);
-}
-    </script>
   </body>
 </html>

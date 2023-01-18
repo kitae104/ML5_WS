@@ -15,12 +15,12 @@ app.use('/', express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.get('/', function (req, res) {
-  res.sendFile(__dirname + "/index.html");
+  res.sendFile(__dirname + "/code.html");
 });
  
 // 페이지를 찾을 수 없음 오류 처리
 app.post('/run', (req, res) => { 
-	var code = req.body.data;
+	var code = req.body.program;
   var html = 
 	  '<!DOCTYPE html>' +
 		'<html lang="en">' +
@@ -36,12 +36,14 @@ app.post('/run', (req, res) => {
 		
 		'	<body>' +
 		'		<h2>머신러닝 체험 페이지</h2>' +
+
 		'		<script>' + code +
 				
 		'		</script>' +
+
 		'	</body>' +
 		'</html>'
-	console.log("html : " + html);
+	
 	res.send(html);
 });
  
