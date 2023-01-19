@@ -1,5 +1,5 @@
 'use strict';
-
+let code;
 const express = require('express');
 const path = require('path');
 const {spawn} = require('child_process');
@@ -19,8 +19,13 @@ app.get('/', function (req, res) {
 });
  
 // 페이지를 찾을 수 없음 오류 처리
-app.post('/run', (req, res) => { 
-	var code = req.body.program;
+app.post('/run', (req, res, next) => {	 
+	code = req.body.program;
+	//res.sendFile(__dirname + "/bottom.html");	
+	next();
+});
+
+app.use(function(req, res) {
   var html = 
 	  '<!DOCTYPE html>' +
 		'<html lang="en">' +
@@ -46,5 +51,5 @@ app.post('/run', (req, res) => {
 	
 	res.send(html);
 });
- 
+
 app.listen(3000, function() {});
