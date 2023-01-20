@@ -29,11 +29,30 @@
     <link rel="stylesheet" href="/css/theme/dracula.css" />
 
     <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <title>ML5 테스트</title>
+    <title>ML5_D3 테스트</title>
 
     <script>
       function consoleclear(){          
         editor.getDoc().setValue('');      
+      }
+
+      function run(){        
+        const code = editor.doc.getValue();				
+        var form = $('<form></form>');
+        form.attr("method", "post");
+        form.attr("action", "/run");
+        
+        // key value 형식으로 바꾼 후에 form 으로 변환
+        var field = $('<input></input>');
+            
+				field.attr("type", "hidden");
+				field.attr("name", "program");
+				field.attr("value", code);
+            
+        form.append(field);
+                
+        // 위에서 생성된 폼을 제출 한다
+        $(form).appendTo('body').submit();
       }
     </script>    
 
@@ -41,18 +60,19 @@
   <body>    
     <div class="container" style="float: none; margin: 100 auto">
       <div class="col-md-12" style="float: none; margin: 0 auto">
-        <h2><b>ML5 실행 테스트</b></h2>
+        <h2><b>ML5_D3 실행 테스트</b></h2>
         <p>ml5.js를 이용한 머신러닝 테스트 페이지 입니다.</p>
         <form method="POST" action="/run" name="runForm" id="runForm">
           <textarea class="Codemirror" id="program" name="program">
             
           </textarea>
-        
+        </form>
         <div class="mt-2">
-          <input class="btn btn-primary" type="submit" value="Run"></input>             
+          <button class="btn btn-primary" id="consoleclear" onclick="run()">RUN</button>
+          <!-- <button class="btn btn-primary" id="consoleclear" onclick="run_d3()">D3</button>     -->      
           <button class="btn btn-primary" id="consoleclear" onclick="consoleclear()">Clear</button>          
         </div>
-      </form>  
+        
         <div class="mt-4"></div>
         <div>[Preview] :</div>              
         <div id="sketch-holder"></div>             

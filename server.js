@@ -18,35 +18,31 @@ app.get('/', function (req, res) {
   res.sendFile(__dirname + "/code.html");
 });
  
-// 페이지를 찾을 수 없음 오류 처리
-app.post('/run', (req, res, next) => {	 
-	code = req.body.program;
-	//res.sendFile(__dirname + "/bottom.html");	
-	next();
-});
 
-app.use(function(req, res) {
+app.post('/run', (req, res) => {	 
+	code = req.body.program;
+	
   var html = 
-	  '<!DOCTYPE html>' +
-		'<html lang="en">' +
-		'	<head>' +
-		'		<title>Getting Started with ml5.js</title>' +
-		'		<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+	  '<!DOCTYPE html>\n' +
+		'<html lang="en">\n' +
+		'	<head>\n' +
+		'		<title>ML5_D3 체험 페이지</title>\n' +
+		'		<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
 		
-		'		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/p5.min.js"></script>' +
-		'		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/addons/p5.sound.min.js"></script>' +
-		
-		'		<script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>' +
+		'		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/p5.min.js"></script>\n' +
+		'		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/addons/p5.sound.min.js"></script>\n' +		
+		'		<script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>\n' +
+		'		<script src="https://d3js.org/d3.v7.min.js"></script>\n' +	
 		'	</head>' +
 		
 		'	<body>' +
-		'		<h2>머신러닝 체험 페이지</h2>' +
-
-		'		<script>' + code +
+		'		<h2>ML5_D3 체험 페이지</h2>\n' +
+		'		<svg width="600" height="400"></svg>\n' +
+		'		<script>\n' + code +
 				
-		'		</script>' +
+		'\n		</script>\n' +
 
-		'	</body>' +
+		'	</body>\n' +
 		'</html>'
 	
 	res.send(html);
