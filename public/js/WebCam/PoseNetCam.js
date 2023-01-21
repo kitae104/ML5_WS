@@ -48,9 +48,7 @@ function draw(){
   }
   size = round(dist(keypointX[0],keypointY[0],keypointX[3],keypointY[3]));
   imageMode(CENTER);
-  
-  // 얼굴 원으로 가리기
+    
   fill(255, 255, 0, 200);
-  ellipse(keypointX[0], keypointY[0]-20, 80, 100);
-  //image(img2,keypointX[0],keypointY[0]-10,size*2.2,size*2.2);
+  ellipse(keypointX[0], keypointY[0]-20, 80, 100);  
 }
