@@ -46,8 +46,8 @@
     .domain([0, d3.max(data)]) // 실제값의 범위
     .range([svgHeight - padding, padding]); // 변환할 값의 범위(역으로 처리)
     const yAxis = d3.axisLeft().scale(yAxisScale);
-    
     svg.append("g").attr("class", "x-axis").call(yAxis).attr("transform", `translate(${padding}, 0)`);
+
     // text영역  추가  
     svg.append("g").attr("class", "val"); 
 
