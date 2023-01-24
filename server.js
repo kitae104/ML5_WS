@@ -15,7 +15,8 @@ app.use('/', express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.get('/', function (req, res) {
-  res.sendFile(__dirname + "/code.html");
+  // res.sendFile(__dirname + "/code.html");
+  res.sendFile(__dirname + "/d3_barchart/index.html");
 });
  
 
