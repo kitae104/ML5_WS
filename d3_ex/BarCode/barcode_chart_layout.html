@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D3 바코드 차트</title>
+  <link href="../public/asserts/css/book.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/d3@3"></script>
+  <script src="https://code.jquery.com/jquery-3.6.3.slim.min.js" integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+  <style>
+    pre{
+      background-color: #eee;
+    }
+  </style>  
+</head>
+<body>
+  <h1 class="section-title">Layout Algorithm</h1>
+  <h2 class="section-subtitle">데이터 추가</h2>
+  <pre><code>[
+    {hour:  0, startAngle: 0,      endAngle: 0.2618, count: 10},
+    {hour:  1, startAngle: 0.2618, endAngle: 0.5236, count: 21},
+    ...
+    {hour: 23, startAngle: 6.0214, endAngle: 6.2832, count:  8}
+  ]
+  </code></pre>
+  
+  <div class="chart-example" id="radial-chart"></div>
+
+  <script>    
+    //==============================================
+    // 데이터 생성 함수 
+    //==============================================
+    //지수 부호를 이용한 랜덤 간격 계산 함수
+    function randomInterval(avgSeconds) {
+      return Math.floor(-Math.log(Math.random()) * 1000 * avgSeconds);
+    };
+
+    // 임의로 생성된 초를 더해서 배열 생성 및 확장 
+    function addData(data, numItems, avgSeconds) {
+      // 데이터 배열에서 가장 최근의 시간 계산
+      let n = data.length;
+      let t = (n > 0) ? data[n - 1].date : new Date();
+
+      // 임의로 생성된 초를 더해서 배열에 추가 
+      for (let k = 0; k < numItems - 1; k += 1) {
+        t = new Date(t.getTime() + randomInterval(avgSeconds));
+        data.push({date: t});
+      }
+      return data;
+    }
+
+    // 방사형 차트 
+    const radialLayout = function() {
+
+      let startAngle = 0;
+      let endAngle = 2 * Math.PI;
+
+      let value = function(d) { return d.date; }
+
+      function layout(data) {
+        let hours = d3.range(0, 24);
+        let gmap = d3.map();
+        let grouped = [];
+        
+        // 각 시간에 해당하는 동일한 각도 계산 
+        let itemAngle = (endAngle - startAngle) / 24;
+
+        // 모든 필드가 0으로 설정된 상태에서 매시간 데이터 항목을 추가.
+        hours.forEach(function(h) {
+          gmap.set(h, {
+            hour: h, 
+            startAngle: startAngle + h * itemAngle, 
+            endAngle: startAngle + (h + 1) * itemAngle, 
+            count: 0
+          });
+        });
+
+        // 각 시간에 속한 아이템 개수 세기
+        data.forEach(function(d) {
+          // 각 데이터 항목의 날짜 속성에서 시간을 가져옵니다
+          var hour = value(d).getHours();
+
+          // 항목 시간에 해당하는 출력 데이터 항목을 가져옵니다.
+          var val = gmap.get(hour);
+          
+          // 갯수를 더하고 맵에 저장 
+          val.count += 1;
+          gmap.set(hour, val);
+        });
+
+        // 맵의 값을 복사하고 결과 데이터 정렬
+        grouped = gmap.values();
+        grouped.sort(function(a, b) { return a.hour > b.hour ? 1 : -1; });
+
+        return grouped;
+      }
+      
+      //==========================================
+      // 데이터 접근자 함수 
+      //==========================================
+      layout.value = function(accessorFunction) {   // d.date -> value(d) 로 대체 가능 
+        if (!arguments.length) { return value; }
+        value = accessorFunction;
+        return layout;
+      };
+      
+      // 각도 처리를 위한 함수 
+      layout.angleExtent = function(value) {
+        if (!arguments.length) { return [startAngle, endAngle]; }
+        startAngle = value[0];
+        endAngle = value[1];
+        return layout;
+      };
+
+      return layout;
+    }
+
+    
+    // 데이터 
+    let data = addData([], 300, 20 * 60);    
+    console.log(data.length);
+
+    let layout = radialLayout();      
+
+    let output = layout(data);
+
+    // Radial Chart
+    let width = 670,
+        height = 200,
+        innerRadius = 30,
+        outerRadius = 100;
+
+    let svg = d3.select('#radial-chart').append('svg')
+      .attr('width', width)
+      .attr('height', height);
+      //.style("background", "yellow");
+        
+    let g = svg.append('g')
+      .attr('transform', 'translate(' + [width / 2, height / 2] + ')');
+
+    // 반지름 축적 계산
+    let rScale = d3.scale.sqrt()
+      .domain([0, d3.max(output, function(d) { return d.count; })])
+      .range([2, outerRadius - innerRadius]);
+
+    let arc = d3.svg.arc()
+      .innerRadius(innerRadius)
+      .outerRadius(function(d) { return innerRadius + rScale(d.count); });
+
+    g.selectAll('path')
+      .data(output)
+      .enter()
+      .append('path')
+        .attr('d', function(d) { return arc(d); })
+        .attr('fill', 'grey')
+        .attr('stroke', 'white')
+        .attr('stroke-width', 1);
+  </script>
+
+  
+</body>
+</html>
