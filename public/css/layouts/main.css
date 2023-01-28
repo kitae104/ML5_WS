@@ -1,0 +1,38 @@
+body {
+  background-color: #eee;
+  font-size: 26px;
+}
+
+.wrapper{
+  width: 1700px;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 10px;
+}
+
+.wrapper2{
+  width: 700px;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+header, footer {
+  background-color: ghostwhite;
+  padding: 20px;
+}
+
+main {
+  background-color: cornsilk;
+  padding: 20px;
+}
+
+.layout-sidebar {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr;
+  background-color: lightblue
+}
