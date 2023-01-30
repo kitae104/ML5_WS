@@ -4,129 +4,226 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>슬라이더 사용</title>
+    <title>툴 팁 사용</title>
     <link href="../../public/asserts/css/book.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/d3@3"></script>
-    <script src="https://code.jquery.com/jquery-3.6.3.slim.min.js"
-      integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo="
-      crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
-      crossorigin="anonymous" />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
-      integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
-      crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-      crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.slim.min.js" integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
   </head>
   <body>
     <h1 class="section-title">툴 팁 연습</h1>
     <div id="chart"></div>
 
     <script>    
+function tooltipChart() {
+    // Tooltip width and height
+    var width = 200,
+        height = 80;
 
-function fruitChart1() {
+    // Tooltip Offset
+    var offset = {x: 20, y: 0};
 
-// Chart Attributes
-var width = 600,
-    height = 120;
-
-// Radius Extent
-var radiusExtent = [0, 40];
-
-// Charting Function
-function chart(selection) {
-    selection.each(function(data) {
-
-        // Select the container div and create the svg selection
-        var div = d3.select(this),
-            svg = div.selectAll('svg').data([data]);
-
-        // Append the svg element on enter
-        svg.enter().append('svg');
-
-        // Update the width and height of the SVG element
-        svg
-            .attr('width', width)
-            .attr('height', height)
-            .style("border", "2px solid rgba(255,0,0,0.9)");
-
-        // Create a scale for the horizontal position
-        var xScale = d3.scale.ordinal()
-            .domain(d3.range(data.length))
-            .rangePoints([0, width], 1);
-
-        var maxCal = d3.max(data, function(d) {
-            return d.calories;
+    // Default Accessors for the Title and Content
+    var title = d => d.title;
+    var content = function(d) { return d.content; };
+    
+    // Charting Function
+    function chart(selection) {
+        selection.each(function(data) {
+            // 컨테이너 요소에 마우스 이벤트 바인딩            
+            d3.select(this)
+                    .on('mouseover.tooltip', create)
+                    .on('mousemove.tooltip', move)
+                    .on('mouseout.tooltip', remove);
         });
+    }
 
-        // Create the radius scale
-        var rScale = d3.scale.sqrt()
-            .domain([0, maxCal])
-            .rangeRound(radiusExtent);
+    // Initialize the tooltip
+    var init = function(selection) {
+        selection.each(function(data) {
+            // Create and configure the tooltip container
+            d3.select(this)
+                .attr('class', 'tooltip-container')
+                .style('width', width + 'px');
 
-        // Create a container group for each circle
-        var gItems = svg.selectAll('g.fruit-item')
-            .data(data)
-            .enter()
-            .append('g')
-            .attr('class', 'fruit-item')
-            .attr('transform', function(d, i) {
-                return 'translate(' + [xScale(i), height / 2] + ')';
+            // Tooltip Title
+            d3.select(this).append('p')
+                .attr('class', 'tooltip-title')
+                .style('text-align','center')
+                .style('font-size','12px')
+                .style('font-weight','bold')
+                .style('line-height','1em')
+                .text(title(data));
+
+            // Tooltip Content
+            d3.select(this).append('p')
+                .attr('class', 'tooltip-content')
+                .style('font-size','11px')
+                .text(content(data));
+        });
+    };
+
+    // Create the tooltip chart
+    var create = function(data) {
+
+        // Create the tooltip container div
+        var tooltipContainer = d3.select('body').append('div')
+            .datum(data)
+            .attr('class', 'tooltip-container')
+            .style('position','absolute')
+            .style('pointer-events','none')
+            .style('padding','2px 4px 2px 6px')
+            .style('background-color','#eee')
+            .style('border','solid 1px #aaa')
+            .call(init);
+
+        // Move the tooltip to its initial position
+        tooltipContainer
+            .style('left', (d3.event.pageX + offset.x) + 'px')
+            .style('top', (d3.event.pageY + offset.y) + 'px');
+    };
+
+    // Move the tooltip to follow the pointer
+    var move = function() {
+        // Select the tooltip and move it following the pointer
+        d3.select('body').select('div.tooltip-container')
+            .style('left', (d3.event.pageX + offset.x) + 'px')
+            .style('top', (d3.event.pageY + offset.y) + 'px');
+    };
+
+    // Remove the tooltip
+    var remove = function() {
+        // Remove the tooltip div.
+        d3.select('div.tooltip-container').remove();
+    };
+
+    // Accessor for the Title Function
+    chart.title = function(titleAccessor) {
+        if (!arguments.length) { return title; }
+        title = titleAccessor;
+        return chart;
+    };
+
+    // Accessor for the Content Function
+    chart.content = function(contentAccessor) {
+        if (!arguments.length) { return content; }
+        content = contentAccessor;
+        return chart;
+    };
+    return chart;
+}    
+
+
+function fruitChart() {
+
+    // Chart Attributes
+    var width = 600,
+        height = 120;
+
+    // Radius Extent
+    var radiusExtent = [0, 40];
+
+    // Create and configure the tooltip
+    var tooltip = tooltipChart()
+        .title(function(d) { return d.name; })
+        .content(function(d) { return d.description; });
+
+    // Charting Function
+    function chart(selection) {
+        selection.each(function(data) {
+
+            // Select the container div and create the svg selection
+            var div = d3.select(this),
+                svg = div.selectAll('svg').data([data]);
+
+            // Append the svg element on enter
+            svg.enter().append('svg');
+
+            // Update the width and height of the SVG element
+            svg
+                .attr('width', width)
+                .attr('height', height)
+                .style("border", "2px solid rgba(255,0,0,0.9)");
+
+            // Create a scale for the horizontal position
+            var xScale = d3.scale.ordinal()
+                .domain(d3.range(data.length))
+                .rangePoints([0, width], 1);
+                
+
+            var maxCal = d3.max(data, function(d) {
+                return d.calories;
             });
 
-        // Add a circle to the item group
-        var circles = gItems.append('circle')
-            .attr('r', function(d) { return rScale(d.calories); })
-            .attr('fill', function(d) { return d.color; });
+            // Create the radius scale
+            var rScale = d3.scale.sqrt()
+                .domain([0, maxCal])
+                .rangeRound(radiusExtent);
 
-        // Add the fruit name
-        var labelName = gItems.append('text')
-            .attr('text-anchor', 'middle')
-            .attr('font-size', '12px')
-            .text(function(d) { return d.name; });
+            // Create a container group for each circle
+            var gItems = svg.selectAll('g.fruit-item')
+                .data(data)
+                .enter()
+                .append('g')
+                .attr('class', 'fruit-item')
+                .attr('transform', function(d, i) {
+                    return 'translate(' + [xScale(i), height / 2] + ')';
+                });
 
-        // Add the calories label
-        var labelKCal = gItems.append('text')
-            .attr('text-anchor', 'middle')
-            .attr('font-size', '10px')
-            .attr('y', 12)
-            .text(function(d) { return d.calories + ' kcal'; });
+            // Add a circle to the item group
+            var circles = gItems.append('circle')
+                .attr('r', function(d) { return rScale(d.calories); })
+                .attr('fill', function(d) { return d.color; });
 
-        // We add listeners to the mouseover and mouseout events
-        circles
-            .on('mouseover', function(d) {
-                d3.select(this)
-                    .attr('stroke-width', 3)
-                    .attr('fill', d3.rgb(d.color).brighter())
-                    .attr('stroke', d.color);
-            })
-            .on('mouseout', function(d) {
-                d3.select(this)
-                    .attr('fill', d.color)
-                    .attr('stroke-width', 0);
-            });
-    });
-}
+            // Add the fruit name
+            var labelName = gItems.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '12px')
+                .text(function(d) { return d.name; });
 
-// Accessor Methods
+            // Add the calories label
+            var labelKCal = gItems.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '10px')
+                .attr('y', 12)
+                .text(function(d) { return d.calories + ' kcal'; });
 
-// Width
-chart.width = function(val) {
-    if (!arguments.length) { return width; }
-    width = val;
+            // 툴 팁 이벤트 리스너에 네임스페이스를 부여해서 원의 리스너를 덮어 쓰지 않게 한다. 
+            circles
+                .on('mouseover', function(d) {
+                    d3.select(this)
+                        .attr('stroke-width', 3)
+                        .attr('fill', d3.rgb(d.color).brighter())
+                        .attr('stroke', d.color);
+                })
+                .on('mouseout', function(d) {
+                    d3.select(this)
+                        .attr('fill', d.color)
+                        .attr('stroke-width', 0);
+                })
+                .call(tooltip);
+        });
+    }
+
+    // 접근자 메소드
+
+    // Width
+    chart.width = function(val) {
+        if (!arguments.length) { return width; }
+        width = val;
+        return chart;
+    };
+
+    // Height
+    chart.height = function(val) {
+        if (!arguments.length) { return height; }
+        height = val;
+        return chart;
+    };
+
     return chart;
-};
-
-// Height
-chart.height = function(val) {
-    if (!arguments.length) { return height; }
-    height = val;
-    return chart;
-};
-
-return chart;
 }
 
 // Load and parse the json data
@@ -139,7 +236,7 @@ if (error) {
 }
 console.log(root);
 // Create and configure the chart
-var fruits = fruitChart1();
+var fruits = fruitChart();
 
 // Select the container element and invoke the fruit chart
 d3.select('div#chart')
