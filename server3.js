@@ -21,8 +21,7 @@ app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
 
 app.set('layout','./layouts/main');
-app.set('layout extractScripts', true);
-
+//app.set('layout extractScripts', true);
 
 app.use(bodyParser.urlencoded({extended: false}));
 

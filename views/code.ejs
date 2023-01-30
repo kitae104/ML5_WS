@@ -30,6 +30,32 @@
 
     <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
     <title>ML5_D3 테스트</title>
+    <script>
+      function consoleclear(){      
+        console.log("clear....");
+        editor.getDoc().setValue('');      
+      }
+
+      function run(){      
+        console.log("run....");
+        const code = editor.doc.getValue();				
+        var form = $('<form></form>');
+        form.attr("method", "post");
+        form.attr("action", "/run");
+        
+        // key value 형식으로 바꾼 후에 form 으로 변환
+        var field = $('<input></input>');
+            
+				field.attr("type", "hidden");
+				field.attr("name", "program");
+				field.attr("value", code);
+            
+        form.append(field);
+                
+        // 위에서 생성된 폼을 제출 한다
+        $(form).appendTo('body').submit();
+      }
+    </script>    
   </head>
   <body>    
     <div class="container" style="float: none; margin: 100 auto">
@@ -67,31 +93,6 @@
         gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
       });      
     </script>    
-    <script>
-      function consoleclear(){      
-        console.log("clear....");
-        editor.getDoc().setValue('');      
-      }
-
-      function run(){      
-        console.log("run....");
-        const code = editor.doc.getValue();				
-        var form = $('<form></form>');
-        form.attr("method", "post");
-        form.attr("action", "/run");
-        
-        // key value 형식으로 바꾼 후에 form 으로 변환
-        var field = $('<input></input>');
-            
-				field.attr("type", "hidden");
-				field.attr("name", "program");
-				field.attr("value", code);
-            
-        form.append(field);
-                
-        // 위에서 생성된 폼을 제출 한다
-        $(form).appendTo('body').submit();
-      }
-    </script>    
+    
   </body>
 </html>
