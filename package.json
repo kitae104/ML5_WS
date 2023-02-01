@@ -2,9 +2,9 @@
   "name": "ml5_ws",
   "version": "1.0.0",
   "description": "ml5.js 를 이용한 머신러닝",
-  "main": "server3.js",
+  "main": "server.js",
   "scripts": {
-    "start": "nodemon server3"
+    "start": "nodemon server"
   },
   "repository": {
     "type": "git",
