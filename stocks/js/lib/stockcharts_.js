@@ -10,10 +10,10 @@ function translate(dx, dy) {
 function stockTitleChart() {
     'use strict';
 
-    // Default title accessor
+    // 타이틀 기본 접근자
     var title = function(d) { return d.title; };
 
-    // Charting function
+    // 차트 함수
     function chart(selection) {
         selection.each(function(data) {
 
@@ -44,21 +44,27 @@ function stockTitleChart() {
 function stockAreaChart() {
     'use strict';
 
-    // Chart Attributes
+    // 차트 속성
     var width = 700,
         height = 300,
-        margin = {top: 20, right: 20, bottom: 20, left: 20};
+        margin = {top: 20, right: 20, bottom: 20, left: 30};
 
+    // 시간 간격 
     var timeExtent;
 
+    // 축과 블러시 활성화
     var yaxis = true,
         xaxis = true,
         brush = true;
 
+    // 기본 접근자 함수 
     var date = function(d) { return new Date(d.date); };
     var value = function(d) { return +d.value; };
+
+    // 기본 브러시 리스너
     var onBrush = function(extent) {};
 
+    // 차트 함수 
     function chart(selection) {
         selection.each(function(data) {
 
@@ -105,7 +111,7 @@ function stockAreaChart() {
                 .domain([0, d3.max(data, value)])
                 .range([h, 0]);
 
-            // Axis
+            // 축 생성 
             xAxis = d3.svg.axis()
                 .scale(xScale)
                 .orient('bottom');
@@ -114,7 +120,7 @@ function stockAreaChart() {
                 .scale(yScale)
                 .orient('left');
 
-            // Add the axes
+            // 축 추가
             if (xaxis) {
                 svg.select('g.xaxis').call(xAxis);
             }
@@ -123,13 +129,13 @@ function stockAreaChart() {
                 svg.select('g.yaxis').call(yAxis);
             }
 
-            // Area
+            // 영역 생성자
             var area = d3.svg.area()
                 .x(function(d) { return xScale(date(d)); })
                 .y0(yScale(0))
                 .y1(function(d) { return yScale(value(d)); });
 
-            // Append the path
+            // 경로 추가 + 시계열 데이터 추가 
             var path = svg.select('g.chart').selectAll('path')
                 .data([data]);
 
@@ -138,25 +144,27 @@ function stockAreaChart() {
             path.attr('d', area)
                 .attr('clip-path', 'url(#clip)');
 
+            // 브러시 리스너 함수 
             function brushListener() {
                 timeExtent = d3.event.target.extent();
                 onBrush(timeExtent);
             }
 
-            // Brush
+            // Brush 동작 
             var brushBehavior = d3.svg.brush()
                 .x(xScale)
                 .on('brush', brushListener);
 
+            // 차트 시간 간격의 초기값이 있는 경우 설정 
             if (timeExtent) {
                 brushBehavior.extent(timeExtent);
             }
 
+            // 동작 호출 
             if (brush) {
-
                 svg.select('g.brush').call(brushBehavior);
 
-                // Change the height of the brushing rectangle
+                // 브러시 사각형의 높이 변경 
                 svg.select('g.brush').selectAll('rect')
                     .attr('height', h);
             }
@@ -166,7 +174,7 @@ function stockAreaChart() {
 
     var svgInit = function(selection) {
 
-        // Define the clipping path
+        // 클립 패스 정의 - 자기 경로 내부에 있는 내용만 화면에 표시
         selection.append('defs')
             .append('clipPath')
             .attr('id', 'clip')
@@ -174,6 +182,7 @@ function stockAreaChart() {
                 .attr('width', width - margin.left - margin.right)
                 .attr('height', height - margin.top - margin.bottom);
 
+        // 차트의 축 그룹 생성 
         selection.append('g').attr('class', 'chart');
         selection.append('g').attr('class', 'axis xaxis');
         selection.append('g').attr('class', 'axis yaxis');
