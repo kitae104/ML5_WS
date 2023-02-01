@@ -15,8 +15,7 @@ app.use('/', express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.get('/', function (req, res) {
-  // res.sendFile(__dirname + "/code.html");
-  res.sendFile(__dirname + "/d3_barchart/index.html");
+  res.sendFile(__dirname + "/code.html");  
 });
  
 
@@ -33,8 +32,7 @@ app.post('/run', (req, res) => {
 		'		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/p5.min.js"></script>\n' +
 		'		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/addons/p5.sound.min.js"></script>\n' +		
 		'		<script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>\n' +
-		//'		<script src="https://d3js.org/d3.v7.min.js"></script>\n' +	
-		'		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.js"></script>\n' +	
+		'		<script src="https://d3js.org/d3.v4.min.js"></script>\n' +	
 		'	</head>\n' +
 		
 		'	<body>\n' +
