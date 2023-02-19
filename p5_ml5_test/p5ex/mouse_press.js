@@ -9,5 +9,5 @@ function draw(){
     fill(255);
   }
   ellipse(mouseX, mouseY, 80, 80);
-  print(mouseX + ", " + mouseY);
+  console.log(mouseX + ", " + mouseY);
 }

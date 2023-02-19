@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P5 에디터</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+    }
+    canvas {
+      background: lightpink;
+    }
+    #p5_loading{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 600px;
+      height: 400px;
+      color: white;
+      background: black;
+    }
+
+    @keyframes loading-ani {
+      from {transform: rotate(0deg);}
+      to {transform: rotate(360deg);}
+    }    
+    #p5_loading::before {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 40px;
+      border: 5px solid white;
+      animation: loading-ani 1s linear infinite;
+    }
+  </style>
+</head>
+<body>  
+  <div id="my-canvas"></div>
+  <script>
+    let myCanvas;
+
+    function setup(){
+      myCanvas = createCanvas(100, 100);
+      let body = document.getElementsByTagName('body')[0];
+      myCanvas.parent(body);
+    }
+
+    function draw() {
+      background(237, 34, 93);
+      fill(0);
+
+      myCanvas.position(winMouseX + 1, winMouseY);
+      rect(20, mouseY, 60, 60);
+    }
+
+    function mousePressed(){
+      // 전체 화면으로 토글하기 
+      if(winMouseX > 0 && winMouseX < 100 && winMouseY > 0 && winMouseY < 100) {
+        let fs = fullscreen();
+        fullscreen(!fs);
+      }
+    }
+  </script>
+</body>
+</html>

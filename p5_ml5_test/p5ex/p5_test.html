@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>P5 에디터</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+      }
+      canvas {
+        background: lightpink;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="my-canvas"></div>
+    <script>
+      function setup() {
+        createCanvas(720, 400);
+        background(51);
+        noStroke();
+        noLoop();
+      }
+
+      let s = 1;
+      function draw() {
+        console.log(s);
+        drawTarget(width * 0.25, height * 0.4, 200, 4);
+        drawTarget(width * 0.5, height * 0.5, 300, s);
+        drawTarget(width * 0.75, height * 0.3, 120, 6);
+        s++;
+        
+        if (s > 50) {
+          s = 1;
+        }
+      }
+
+      function drawTarget(xloc, yloc, size, num) {
+        const grayvalues = 255 / num;
+        const steps = size / num;
+        for (let i = 0; i < num; i++) {
+          fill(i * grayvalues);
+          ellipse(xloc, yloc, size - i * steps, size - i * steps);
+        }
+      }
+    </script>
+  </body>
+</html>

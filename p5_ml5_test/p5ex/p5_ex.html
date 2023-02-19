@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P5 에디터</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+    }
+    canvas {
+      border: 2px dashed deeppink;
+    }    
+  </style>
+</head>
+<body>
+  <div id="my-canvas"></div>
+  <script>    
+    function setup() {
+      const myCanvas = createCanvas(600, 400);
+      myCanvas.parent("my-canvas");      
+    }
+
+    // 라디안 구하는 함수 
+    function toRad(d){
+      return d * Math.PI / 180;
+    }
+
+    let r = 1;        // 빗변의 길이  - 점점 퍼져 나가는 효과를 위해 
+
+    function draw(){
+      clear();
+      drawCircle();
+    }
+
+    function drawCircle(){
+      for(let i = 0; i < 6; i++){
+        // 마우스 좌표를 이용해 x, y 좌표 값 구하기 
+        let xPos = mouseX + Math.cos(toRad(i * 60)) * r;  
+        let yPos = mouseY + Math.sin(toRad(i * 60)) * r;
+        ellipse(xPos, yPos, (5+r)/2, (5+r)/2);      
+      }
+
+      r += 2;
+      if(r > 100){      // 조건을 벗어나면 다시 빗변의 길이를 줄여줌. 
+        r = 1;
+      }
+    }
+  </script>
+</body>
+</html>

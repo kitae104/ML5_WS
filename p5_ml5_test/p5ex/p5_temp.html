@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P5 에디터</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+    }
+    canvas {
+      background: lightpink;
+    }
+    #p5_loading{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 600px;
+      height: 400px;
+      color: white;
+      background: black;
+    }
+
+    @keyframes loading-ani {
+      from {transform: rotate(0deg);}
+      to {transform: rotate(360deg);}
+    }    
+    #p5_loading::before {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 40px;
+      border: 5px solid white;
+      animation: loading-ani 1s linear infinite;
+    }
+  </style>
+</head>
+<body>
+  <div id="p5_loading" class="loadingclass">로딩중</div>
+  <div id="my-canvas"></div>
+  <script>
+    let img;
+
+    function preload() {
+      img = loadImage("naruto.png");
+    }
+
+    function setup() {
+      createCanvas(600, 400);
+      image(img, 10, 10, img.width, img.height);
+    }
+  </script>
+</body>
+</html>
