@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P5 투명도</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+    }
+    canvas {
+      #background: lightpink;
+    }    
+  </style>
+</head>
+<body>
+  <div id="my-canvas"></div>
+  <script>
+    let img;
+    let offset = 0;
+    let easing = 0.05;
+
+    function setup() {
+      const myCanvas = createCanvas(600, 400);
+      img = loadImage('naruto.png');
+      myCanvas.parent("my-canvas");
+    }
+
+    function draw(){
+      image(img, 0, 0);
+      let dx = mouseX - img.width / 2 - offset;
+      offset += dx * easing;  // 위치 이동 
+      tint(255, 127);         // 이미지를 투명도 50%로 보이게하기
+      image(img, offset, 0);
+    }
+  </script>
+</body>
+</html>
