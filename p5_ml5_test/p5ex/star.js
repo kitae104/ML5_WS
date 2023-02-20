@@ -15,7 +15,7 @@ function draw() {
   push();
   translate(width * 0.5, height * 0.5);
   rotate(frameCount / 50.0);
-  star(100, 100, sin(radians(angle++)) * 100 + 150, 100, 40);
+  star(0, 0, sin(radians(angle++)) * 100 + 150, 100, 40);
   pop();
 
   push();
@@ -32,7 +32,7 @@ function star(x, y, radius1, radius2, npoints) {
   beginShape();
   for (let a = 0; a < TWO_PI; a += angle) {
     let sx = x + cos(a) * radius2;
-    let sy = sin(a) * radius2;
+    let sy = y + sin(a) * radius2;
     vertex(sx, sy); // 긴 선을 위한 정점
 
     sx = x + cos(a + halfAngle) * radius1;
