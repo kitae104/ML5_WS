@@ -16,20 +16,58 @@ let notes = {
 function setup(){
   createCanvas(400, 400);  
 
-  // wave.setType('sine');
-  // wave.start();
-  // wave.freq(440);
-  // wave.amp(env);
-
-  let options = {
+  let options = {    
     inputs: ['x', 'y'],     // 입력 
     outputs: ['label'],
     task: 'classification',
-    debug: 'true'           // 시각화 활성화 
+    debug: 'true',          // 시각화 활성화 
+    learningRate: 0.1       // 학습률
   };
 
-  model = ml5.neuralNetwork(options);
+  model = ml5.neuralNetwork(options, dataLoaded);
+  // 현재 데이터 불러오는데 보여주지 못하는 상태임
+  model.loadData('mouse-notes.json', dataLoaded);
+  
+  const modelInfo = {
+    model: 'model/mouse-notes.json',
+    metadata: 'model/mouse-notes_meta.json',
+    weights: 'model/mouse-notes.weights.bin'
+  };
+
+  model.load(modelInfo, modelLoaded);
   background(255);
+}
+
+function modelLoaded(){
+  console.log('model loaded');
+  state = 'prediction';
+}
+
+function dataLoaded(){
+  console.log(model);
+  let data = model.neuralNetworkData.data.raw;
+  console.log(data);
+  // //let data = model.getData();
+  // for(let i=0; i< data.length; i++){
+  //   let inputs = data[i].xs.xs;
+  //   let target = data[i].xs.ys;
+
+  //   stroke(0);
+  //   noFill();
+  //   ellipse(inputs.x, inputs.y, 24);
+  //   fill(0);
+  //   noStroke();
+  //   textAlign(CENTER, CENTER);
+  //   text(target.label, inputs.x, inputs.y);
+  // }
+
+  // state = 'training';
+  //   console.log('starting training');
+  //   model.normalizeData();
+  //   let options = {
+  //     epochs: 200     // epochs, batchSize
+  //   }
+  //   model.train(options, whileTraining, finishedTraining);
 }
 
 function keyPressed(){
@@ -43,7 +81,9 @@ function keyPressed(){
     }
     model.train(options, whileTraining, finishedTraining);
   } else if(key == 's'){    
-    model.saveData("mouse-notes");    // 데이터 저장 
+    model.saveData("mouse-notes");    // 데이터 저장 (다시 해보기)
+  } else if(key == 'm'){    
+    model.save();    // 데이터 저장 - 이름 없이 처리 
   } else {
     targetLabel = key.toUpperCase();
   }
@@ -78,9 +118,6 @@ function mousePressed(){
     noStroke();
     textAlign(CENTER, CENTER);
     text(targetLabel, mouseX, mouseY);
-
-    // wave.freq(notes[targetLabel]);
-    // env.play();
   } else if(state == 'prediction'){
     model.classify(inputs, gotResults);
   }
