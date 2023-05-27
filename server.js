@@ -8,7 +8,7 @@ const fs = require('fs').promises;
 // const cors = require('cors');
 
 const app = express();
-app.use('/', express.static(path.join(__dirname, 'public')));
+app.use('/', express.static(path.join(__dirname, 'p5_ml5_test')));
 
 // app.use(cors());
 app.set('views', __dirname +'/views');
