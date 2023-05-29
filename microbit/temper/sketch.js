@@ -1,23 +1,34 @@
+let backgroundColor = "red";
+let tempMap = 0.0;
+let temp;
+
 function setup() {
   createCanvas(400, 400);
+  background("black");
 }
-var backgroundColor = "red"
-var tempMap = 0.0
+
 function draw() {
-var lcol = lerpColor(color("white"),color(backgroundColor),tempMap)
-background(lcol)
+  var lcol = lerpColor(color("white"), color(backgroundColor), tempMap);
+  background(lcol);
+  text(temp, 20, 100, 100, 100);      // text, x, y, width, height
+  textSize(32);                       // 글자 크기
+  fill("white");                      // 글자 색
+  stroke("black")                     // 테두리 색
+  strokeWeight(4);                    // 테두리 두께
 }
-function mousePressed(){
+
+function mousePressed() {
   microBitConnect();
 }
 
-function microBitReceivedMessage(message){ 
-  var temp = int(message)
+// 마이크로비트에서 메시지를 받으면 호출되는 함수
+function microBitReceivedMessage(message) {  
+  temp = int(message);              // 문자열을 정수로 변환
   if (temp > 35) {
-    backgroundColor = "red"
+    backgroundColor = "red";
   } else {
-    backgroundColor = "blue"
+    backgroundColor = "blue";
   }
-  var absTemp = abs(temp - 20)
-  tempMap = map (absTemp, 0, 10, 0, 1)
+  var absTemp = abs(temp - 20);
+  tempMap = map(absTemp, 0, 10, 0, 1);
 }

@@ -34,10 +34,11 @@ function setup() {
   
   //define connect and disconnect buttons
   const connectButton = createButton("Connect");
-  connectButton.mousePressed(connectBle);
+  connectButton.mousePressed(microBit.connectDevice());    
+  
 
   const disconnectButton = createButton("Disconnect");
-  disconnectButton.mousePressed(disconnectBle);
+  //disconnectButton.mousePressed(disconnectBle);
 
   const helloButton = createButton("Hello!");
   helloButton.mousePressed(sayHello);
@@ -48,8 +49,6 @@ function setup() {
   byeButton.mousePressed(sayBye);
   byeButton.position(250,height/2);
   byeButton.size(200,40);
-
-
   //video.showControls();
 }
 
@@ -63,7 +62,6 @@ function draw() {
 
 //handleData function is called 
 //when the bluetooth data is received.
-
 function handleData(status) {
     receivedText = status;
     print("received:"+status);  
