@@ -79,6 +79,3 @@ function draw() {
   fill(255);
   text("sensor value: " + inData, 30, 50);
 }
-
-
-
