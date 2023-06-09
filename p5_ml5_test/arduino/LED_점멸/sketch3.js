@@ -1,4 +1,3 @@
-// 키보드 문자 보내기
 let port = new p5.WebSerial();
 
 function setup() {
@@ -11,7 +10,7 @@ function setup() {
   fill(255, 255, 0);
   textAlign(CENTER);
   textSize(30);
-  text("Press Number(1,2,3,4)", width/2, height/2);
+  text("Press on the mouse button", width/2, height/2);
 }
 
 function makePortButton() {                   // 포트 첫 연결 시 포트 선택 버튼 생성
@@ -26,18 +25,6 @@ function openPort() {                 // 콜백함수
   port.open().then(initiateSerial);   // 포트를 오픈 후 initiateSerial() 자동 호출
   function initiateSerial() {         // 콜백함수
     console.log('포트 오픈');
-  }
-}
-
-function keyPressed() {
-  if(key === 'a'){
-    port.write(1);              // 1 송신
-  } else if(key === 'b'){
-    port.write(2);              // 2 송신
-  } else if(key === 'c'){
-    port.write(3);              // 3 송신
-  } else if(key === 'd'){
-    port.write(4);              // 4 송신
   }
 }
 
