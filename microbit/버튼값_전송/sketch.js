@@ -11,9 +11,9 @@ function setup() {
 
 function draw() {
   background(0);
-  if (value === 0) {
+  if (value === 49) {
     fill(255, 255, 0);
-  } else {
+  } else if(value == 50){
     fill(255, 0, 0);
   }
   ellipse(width/2, height/2, 200, 200);
