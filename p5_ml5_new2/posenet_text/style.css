@@ -1,0 +1,19 @@
+@font-face {
+  font-family: "myFont";
+ /*Specify the name of your font here. TIP: Drag and drop your file at https://www.axis-praxis.org/ to make sure it works! */
+  src: url("MutatorSans.ttf");
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+
+h5 {
+  margin: 0px;
+  font: 150px "myFont";
+  font-variation-settings: "wght"100;
+}
