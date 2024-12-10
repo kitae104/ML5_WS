@@ -128,5 +128,5 @@ function gotResults(error, results){
 }
 
 function draw() {
-  //background(255);
+  background(200);
 }

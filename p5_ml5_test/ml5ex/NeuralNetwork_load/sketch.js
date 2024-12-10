@@ -34,19 +34,19 @@ function dataLoaded(){
   console.log(model);
   let data = model.neuralNetworkData.data.raw;
   console.log(data);
-  // //let data = model.getData();
-  // for(let i=0; i< data.length; i++){
-  //   let inputs = data[i].xs.xs;
-  //   let target = data[i].xs.ys;
+  //data = model.getData();
+  for(let i=0; i< data.length; i++){
+    let inputs = data[i].xs.xs;
+    let target = data[i].xs.ys;
 
-  //   stroke(0);
-  //   noFill();
-  //   ellipse(inputs.x, inputs.y, 24);
-  //   fill(0);
-  //   noStroke();
-  //   textAlign(CENTER, CENTER);
-  //   text(target.label, inputs.x, inputs.y);
-  // }
+    stroke(0);
+    noFill();
+    ellipse(inputs.x, inputs.y, 24);
+    fill(0);
+    noStroke();
+    textAlign(CENTER, CENTER);
+    text(target.label, inputs.x, inputs.y);
+  }
 
   state = 'training';
     console.log('starting training');
@@ -127,5 +127,5 @@ function gotResults(error, results){
 }
 
 function draw() {
-  //background(255);
+  background(255);
 }
