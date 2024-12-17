@@ -17,7 +17,7 @@ function setup() {
         serial.requestPort();
         let portButton = createButton('포트선택');
         portButton.mousePressed(() => {
-            port.requestPort();
+            serial.requestPort();
         });
 
     });
@@ -57,7 +57,7 @@ function sendData() {
     let sliderValue = sliderR.value();
 
     // 데이터 포맷 구성 (예: JSON 형태)
-    let dataToSend = textValue + ',' +  numberValue; // + sliderValue;
+    let dataToSend = textValue + ',' + numberValue + ',' + sliderValue;
     //let dataToSend = numberValue;
     //let dataToSend = sliderValue;
         
