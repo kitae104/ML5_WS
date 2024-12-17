@@ -57,7 +57,9 @@ function sendData() {
     let sliderValue = sliderR.value();
 
     // 데이터 포맷 구성 (예: JSON 형태)
-    let dataToSend = textValue + ',' + numberValue + ',' + sliderValue;
+    let dataToSend = textValue + ',' +  numberValue; // + sliderValue;
+    //let dataToSend = numberValue;
+    //let dataToSend = sliderValue;
         
     // 시리얼 포트를 통해 데이터 전송
     serial.write(dataToSend);
