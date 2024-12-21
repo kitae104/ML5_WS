@@ -11,7 +11,7 @@ let uvCoords;
 function preload() {
     // faceMesh 모델 로드
     faceMesh = ml5.faceMesh(options);
-    uvMapImage = loadImage("clouds.jpg");
+    uvMapImage = loadImage("images/clouds.jpg");
 }
 
 function setup() {
