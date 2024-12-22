@@ -1,17 +1,8 @@
-// Copyright (c) 2019 ml5
-// 
-// This software is released under the MIT License.
-// https://opensource.org/licenses/MIT
-
-/* ===
-ml5 Example
-A piano using pitch Detection with CREPE
-=== */
-
 // Pitch variables
 let pitch;
 let audioContext;
 let audioStream;
+let mic;
 
 // Keyboard variables
 const cornerCoords = [10, 40];
@@ -23,10 +14,24 @@ let currentNote = '';
 
 function setup() {
   createCanvas(640, 520);
+  let button = createButton('Start Audio');
+  button.position(300, 50);
+  button.mousePressed(startAudio);
+
   audioContext = getAudioContext();
   mic = new p5.AudioIn();
   mic.start(startPitch);
 }
+
+function startAudio() {
+  // 사용자 동작 이후에 AudioContext 활성화
+  if (getAudioContext().state !== 'running') {
+    getAudioContext().resume().then(() => {
+      console.log('AudioContext is now running');
+    });
+  }
+}
+
 
 function startPitch() {
   pitch = ml5.pitchDetection('./model/', audioContext , mic.stream, modelLoaded);

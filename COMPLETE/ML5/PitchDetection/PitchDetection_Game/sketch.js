@@ -1,36 +1,38 @@
-// Copyright (c) 2019 ml5
-//
-// This software is released under the MIT License.
-// https://opensource.org/licenses/MIT
-
-/* ===
-ml5 Example
-A game using pitch Detection with CREPE
-=== */
-
-// Pitch variables
 let crepe;
 const voiceLow = 100;
 const voiceHigh = 500;
 let audioStream;
 
 // Circle variables
-let circleSize = 42;
+const circleSize = 42;
 const scale = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 // Text variables
 let goalNote = 0;
 let currentNote = '';
-let currentText = '';
+const currentText = '';
 let textCoordinates;
 
 function setup() {
   createCanvas(410, 320);
   textCoordinates = [width / 2, 30];
   gameReset();
+  let button = createButton('Start Audio');
+  button.position(300, 150);
+  button.mousePressed(startAudio);
+
   audioContext = getAudioContext();
   mic = new p5.AudioIn();
   mic.start(startPitch);
+}
+
+function startAudio() {
+  // 사용자 동작 이후에 AudioContext 활성화
+  if (getAudioContext().state !== 'running') {
+    getAudioContext().resume().then(() => {
+      console.log('AudioContext is now running');
+    });
+  }
 }
 
 function startPitch() {
@@ -45,7 +47,7 @@ function modelLoaded() {
 function getPitch() {
   pitch.getPitch(function(err, frequency) {
     if (frequency) {
-      let midiNum = freqToMidi(frequency);
+      const midiNum = freqToMidi(frequency);
       currentNote = scale[midiNum % 12];
       select('#currentNote').html(currentNote);
     }
