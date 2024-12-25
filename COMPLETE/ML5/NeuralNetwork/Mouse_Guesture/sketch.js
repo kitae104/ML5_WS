@@ -83,5 +83,5 @@ function mouseReleased() {
 // 9단계: 분류 결과를 처리하는 함수 정의
 function gotResults(results) {
 	label = results[0].label; // 결과 레이블 업데이트
-	console.log(results);
+	console.log(results);		
 }
