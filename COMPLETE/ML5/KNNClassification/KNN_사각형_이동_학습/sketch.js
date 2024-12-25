@@ -1,177 +1,175 @@
-// Copyright (c) 2019 ml5
-//
-// This software is released under the MIT License.
-// https://opensource.org/licenses/MIT
-
-/* ===
-ml5 Example
-KNN Classification on Webcam Images with mobileNet. Built with p5.js
-=== */
 let video;
 let posX;
 let posY;
 const squareSize = 100;
-// Create a KNN classifier
 const knnClassifier = ml5.KNNClassifier();
 let featureExtractor;
 
 function setup() {
-  // Create a featureExtractor that can extract the already learned features from MobileNet
-  featureExtractor = ml5.featureExtractor('MobileNet', modelReady);
+	// HTML 동적 생성
+	createHTML();
 
-  const canvas = createCanvas(640, 480);
-  posX = width / 2;
-  posY = height / 2;
-  // Put the canvas into the <div id="canvasContainer"></div>.
-  canvas.parent('#canvasContainer')
-  // Create a video element
-  video = createCapture(VIDEO);
-  video.size(width, height);
-  // Hide the video element, and just show the canvas
-  video.hide();
-  // Create the UI buttons
-  createButtons();
-  noStroke();
-  fill(255, 0, 0);
+	// MobileNet에서 학습된 특징을 추출할 featureExtractor 생성
+	featureExtractor = ml5.featureExtractor('MobileNet', modelReady);
+
+	const canvas = createCanvas(640, 480);
+	posX = width / 2;
+	posY = height / 2;
+
+	// 캔버스를 동적으로 생성된 canvasContainer에 추가
+	canvas.parent('#canvasContainer');
+
+	// 비디오 요소 생성
+	video = createCapture(VIDEO);
+	video.size(width, height);
+
+	// 비디오 요소 숨기기 및 캔버스만 표시
+	video.hide();
+
+	// UI 버튼 생성
+	createButtons();
+
+	noStroke();
+	fill(255, 0, 0);
 }
 
 function draw() {
-  // Flip the video from left to right, mirror the video
-  translate(width, 0)
-  scale(-1, 1);
-  image(video, 0, 0, width, height);
+	// 비디오를 좌우 반전하여 그리기
+	translate(width, 0);
+	scale(-1, 1);
+	image(video, 0, 0, width, height);
 
-  // draw a square on the canvas
-  rect(posX, posY, squareSize, squareSize);
+	// 캔버스에 사각형 그리기
+	rect(posX, posY, squareSize, squareSize);
 }
 
-function modelReady(){
-  select('#status').html('FeatureExtractor(mobileNet model) Loaded')
+function modelReady() {
+	// 모델 로드 완료 상태 업데이트
+	select('#status').html('FeatureExtractor(MobileNet 모델) 로드 완료');
 }
 
-// Add the current frame from the video to the classifier
+// HTML 동적 생성 함수
+function createHTML() {
+	const body = select('body');	
+
+    const result = createP(
+		'KNN 분류기(MobileNet 모델)가 예측한 클래스: '
+	)
+		.child(createSpan('...').id('result'))
+		.child(' 신뢰도: ')
+		.child(createSpan('...').id('confidence'));
+	body.child(result);
+
+	const canvasContainer = createDiv().id('canvasContainer');
+	body.child(canvasContainer);
+
+	const status = createP('모델 로드 중...').id('status');
+	body.child(status);
+
+	const directions = [
+		{ label: '위쪽', id: 'addClass1', emoji: '⬆️' },
+		{ label: '오른쪽', id: 'addClass2', emoji: '➡️' },
+		{ label: '아래쪽', id: 'addClass3', emoji: '⬇️' },
+		{ label: '왼쪽', id: 'addClass4', emoji: '⬅️' },
+	];
+
+	directions.forEach(({ label, id, emoji }) => {
+		body.child(
+			createP(`${emoji} `).child(
+				createButton(`${label} 클래스에 예제 추가`).id(id)
+			)
+		);
+		body.child(createP(`0 ${label} 예제`).id(`example${id.slice(-1)}`));
+	});
+
+	const predictButton = createButton('예측 시작!').id('buttonPredict');
+	const clearAllButton = createButton('모든 클래스 삭제').id('clearAll');
+	body.child(
+		createP()
+			.child(predictButton)
+			.child(createElement('br'))
+			.child(clearAllButton)
+	);	
+}
+
+// 현재 비디오 프레임을 분류기에 추가
 function addExample(label) {
-  // Get the features of the input video
-  const features = featureExtractor.infer(video);
-
-  // Add an example with a label to the classifier
-  knnClassifier.addExample(features, label);
-  updateCounts();
+	const features = featureExtractor.infer(video);
+	knnClassifier.addExample(features, label);
+	updateCounts();
 }
 
-// Predict the current frame.
+// 현재 프레임을 예측
 function classify() {
-  // Get the total number of labels from knnClassifier
-  const numLabels = knnClassifier.getNumLabels();
-  if (numLabels <= 0) {
-    console.error('There is no examples in any label');
-    return;
-  }
-  // Get the features of the input video
-  const features = featureExtractor.infer(video);
-
-  // Use knnClassifier to classify which label do these features belong to
-  knnClassifier.classify(features, gotResults);
+	const numLabels = knnClassifier.getNumLabels();
+	if (numLabels <= 0) {
+		console.error('어떠한 레이블에도 예제가 없습니다.');
+		return;
+	}
+	const features = featureExtractor.infer(video);
+	knnClassifier.classify(features, gotResults);
 }
 
-// A util function to create UI buttons
+// UI 버튼 생성
 function createButtons() {
-  // When the addClass1 button is pressed, add the current frame to class "Up"
-  buttonA = select('#addClass1');
-  buttonA.mousePressed(function() {
-    addExample('Up');
-  });
-
-  // When the addClass2 button is pressed, add the current frame to class "Right"
-  buttonB = select('#addClass2');
-  buttonB.mousePressed(function() {
-    addExample('Right');
-  });
-
-  // When the addClass3 button is pressed, add the current frame to class "Down"
-  buttonC = select('#addClass3');
-  buttonC.mousePressed(function() {
-    addExample('Down');
-  });
-
-  // When the addClass4 button is pressed, add the current frame to class "Left"
-  buttonC = select('#addClass4');
-  buttonC.mousePressed(function() {
-    addExample('Left');
-  });
-
-  // Predict button
-  buttonPredict = select('#buttonPredict');
-  buttonPredict.mousePressed(classify);
-
-  // Clear all classes button
-  buttonClearAll = select('#clearAll');
-  buttonClearAll.mousePressed(clearAllLabels);
+	select('#addClass1').mousePressed(() => addExample('Up'));
+	select('#addClass2').mousePressed(() => addExample('Right'));
+	select('#addClass3').mousePressed(() => addExample('Down'));
+	select('#addClass4').mousePressed(() => addExample('Left'));
+	select('#buttonPredict').mousePressed(classify);
+	select('#clearAll').mousePressed(clearAllLabels);
 }
 
-// Show the results
+// 예측 결과 처리
 function gotResults(err, result) {
-  // Display any error
-  if (err) {
-    console.error(err);
-  }
+	if (err) {
+		console.error(err);
+	}
 
-  if (result.confidencesByLabel) {
-    const confidences = result.confidencesByLabel;
-    // result.label is the label that has the highest confidence
-    if (result.label) {
-      select('#result').html(result.label);
-      select('#confidence').html(`${confidences[result.label] * 100} %`);
+	if (result.confidencesByLabel) {
+		const confidences = result.confidencesByLabel;
+		if (result.label) {
+			select('#result').html(result.label);
+			select('#confidence').html(
+				`${(confidences[result.label] * 100).toFixed(2)} %`
+			);
 
-      switch(result.label) {
-        case 'Up':
-          posY-=2;
-          break;
-
-        case 'Down':
-          posY+=2;
-          break;
-
-        case 'Left':
-          posX+=2;
-          break;
-
-        case 'Right':
-          posX-=2;
-          break;
-        
-        default:
-          console.log(`Sorry, unknown label: ${result.label}`);
-      }
-      // Border checking
-      if (posY < 0) posY = 0;
-      if (posY > height - squareSize) posY = height - squareSize;
-      if (posX < 0) posX = 0;
-      if (posX > width - squareSize) posX = width - squareSize;
-    }
-  }
-
-  classify();
+			switch (result.label) {
+				case 'Up':
+					posY -= 2; // 위쪽 이동
+					break;
+				case 'Down':
+					posY += 2; // 아래쪽 이동
+					break;
+				case 'Left':
+					posX += 2; // 왼쪽 이동
+					break;
+				case 'Right':
+					posX -= 2; // 오른쪽 이동
+					break;
+				default:
+					console.log(`알 수 없는 레이블입니다: ${result.label}`);
+			}
+			if (posY < 0) posY = 0;
+			if (posY > height - squareSize) posY = height - squareSize;
+			if (posX < 0) posX = 0;
+			if (posX > width - squareSize) posX = width - squareSize;
+		}
+	}
+	classify();
 }
 
-// Update the example count for each class	
+// 각 클래스의 예제 수 업데이트
 function updateCounts() {
-  const counts = knnClassifier.getCountByLabel();
-
-  select('#example1').html(counts['Up'] || 0);
-  select('#example2').html(counts['Right'] || 0);
-  select('#example3').html(counts['Down'] || 0);
-  select('#example4').html(counts['Left'] || 0);
+	const counts = knnClassifier.getCountByLabel();
+	select('#example1').html(`${counts['Up'] || 0} 위쪽 예제`);
+	select('#example2').html(`${counts['Right'] || 0} 오른쪽 예제`);
+	select('#example3').html(`${counts['Down'] || 0} 아래쪽 예제`);
+	select('#example4').html(`${counts['Left'] || 0} 왼쪽 예제`);
 }
 
-// Clear the examples in one class
-function clearLabel(classLabel) {
-  knnClassifier.clearLabel(classLabel);
-  updateCounts();
-}
-
-// Clear all the examples in all classes
+// 모든 클래스의 예제 삭제
 function clearAllLabels() {
-  knnClassifier.clearAllLabels();
-  updateCounts();
+	knnClassifier.clearAllLabels();
+	updateCounts();
 }
