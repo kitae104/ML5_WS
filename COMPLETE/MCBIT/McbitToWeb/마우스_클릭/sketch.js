@@ -57,6 +57,19 @@ function serialEvent() {
 
 			// 버튼 클릭 여부
 			isClicking = button === 1;
+			
+			if(x < 0) {
+				x = 0;
+			}
+			if(x > width) {
+				x = width;
+			}
+			if(y < 0) {
+				y = 0;
+			}
+			if(y > height) {
+				y = height;
+			}
 		}
 	}
 }
