@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>LLM Inference Web Demo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.2/p5.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.2/addons/p5.dom.min.js"></script>		
+    <script type="module" src="index.js"></script>
+    <style></style>
+</head>
+
+<body>
+    <div>        
+        <div>
+            <div>                
+                <p>
+                    <input type="file" accept=".bin" id="load_model">
+                </p>
+
+                Input:<br />
+                <textarea id="input" style="height: 50px; width: 50%"></textarea><br />
+                <input type="button" id="submit" value="Get Response" disabled /><br />
+                <br />
+                <div hidden>
+                    Result:<br />
+                </div>
+                <textarea id="output" style="height: 100px; width: 50%" disabled hidden></textarea>
+            </div> 
+            <div>
+                <div id="sketch-holder"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- p5js load -->
+    <script src="sketch.js"></script>
+</body>
+
+</html>
