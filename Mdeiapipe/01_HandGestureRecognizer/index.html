@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mediapipe Example</title>
+  <link rel="stylesheet" href="styles.css"> <!-- CSS 파일 사용 시 -->
+  <style>
+    /* CodePen의 CSS */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    #demos {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    /* 기타 스타일 */
+  </style>
+</head>
+<body>
+  <div id="demos">
+    <!-- CodePen의 HTML -->
+    <h1>Gesture Recognizer</h1>
+    <button id="webcamButton">Enable Webcam</button>
+    <video id="webcam" autoplay muted></video>
+    <canvas id="output_canvas"></canvas>
+    <p id="gesture_output"></p>
+  </div>
+
+  <!-- Mediapipe 라이브러리 추가 -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3"></script>
+  <script>
+    // CodePen의 JS
+    const demosSection = document.getElementById("demos");
+    const enableWebcamButton = document.getElementById("webcamButton");
+    const webcam = document.getElementById("webcam");
+    const outputCanvas = document.getElementById("output_canvas");
+    const gestureOutput = document.getElementById("gesture_output");
+    const canvasCtx = outputCanvas.getContext("2d");
+
+    // 예시: Mediapipe 설정 및 이벤트 처리
+    let gestureRecognizer;
+    async function initializeRecognizer() {
+      const vision = await FilesetResolver.forVisionTasks(
+        "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm"
+      );
+      gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
+        baseOptions: {
+          modelAssetPath: "https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task"
+        }
+      });
+    }
+    initializeRecognizer();
+  </script>
+</body>
+</html>
