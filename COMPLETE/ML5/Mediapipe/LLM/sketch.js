@@ -11,4 +11,3 @@ function draw() {
     // Add your drawing commands here
     text(g_text, 20, 20);
 }
-
