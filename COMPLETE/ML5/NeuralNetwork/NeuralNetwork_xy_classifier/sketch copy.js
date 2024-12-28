@@ -2,22 +2,9 @@
 let brain;
 
 function setup() {
-	createP('라벨을 선택한 후 캔버스를 클릭하여 훈련 데이터를 추가하세요.');
-    let canvas = createCanvas(400, 400);
-	canvas.mousePressed(addData); // 캔버스를 클릭했을 때만 데이터 추가
-
-	// HTML 요소 동적으로 생성
-	createP('라벨: ').style('display', 'inline');
-	let labelDropdown = createSelect().id('label');
-	labelDropdown.option('A');
-	labelDropdown.option('B');
-
-	createButton('훈련').id('train').style('margin-left', '15px').mousePressed(trainModel);
-    createP(''); // 줄바꿈
-	createP('판별 : ').style('display', 'inline');
-	createSpan('').id('classification');
-
-	
+	let canvas = createCanvas(400, 400);
+	// 캔버스를 클릭했을 때만 데이터 추가
+	canvas.mousePressed(addData);
 
 	// 모델 생성
 	const options = {
@@ -27,6 +14,9 @@ function setup() {
 		task: 'classification', // 분류 작업
 	};
 	brain = ml5.neuralNetwork(options);
+
+	// 모델 학습 버튼
+	select('#train').mousePressed(trainModel);
 
 	background(0); // 배경 색상 설정
 }
@@ -50,13 +40,17 @@ function addData() {
 
 // 모델 학습
 function trainModel() {
-	brain.normalizeData(); // 데이터를 0과 1 사이로 정규화
-	brain.train({ epochs: 50 }, finishedTraining); // 모델 학습 시작
+	// ml5가 데이터를 0과 1 사이로 정규화
+	brain.normalizeData();
+	// 모델 학습 시작
+	// Epochs: 모든 학습 데이터를 한 번 반복하는 주기
+	brain.train({ epochs: 50 }, finishedTraining);
 }
 
 // 모델 학습 완료 시 호출
 function finishedTraining() {
-	brain.classify({ x: mouseX, y: mouseY }, gotResults); // 현재 좌표를 분류
+	// 현재 좌표를 분류
+	brain.classify({ x: mouseX, y: mouseY }, gotResults);
 }
 
 // 결과 받기
@@ -67,11 +61,7 @@ function gotResults(error, results) {
 	}
 
 	// 분류 결과 표시
-	select('#classification')
-    .html(results[0].label)
-    .style('color', 'red')
-    .style('font-weight', 'bold')
-    .style('font-size', '16px');
+	select('#classification').html(results[0].label);
 
 	// 다음 예측 실행
 	brain.classify({ x: mouseX, y: mouseY }, gotResults);
