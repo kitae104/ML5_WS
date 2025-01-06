@@ -1,96 +1,64 @@
-let video;
+// ml5.js와 p5.js를 활용하여 동서남북 방향을 예측하는 프로그램
 let classifier;
-let classNames = [];
-let predictionResult = '결과 없음';
+let video;
+let label = 'Waiting...';
 
-const modelPath = './my-model.json'; // 저장된 TensorFlow.js 모델 경로
-const metadataPath = './model-metadata.json'; // 메타데이터 경로
 
+function preload() {
+	// 모델 및 메타데이터 로드
+	const options = {
+		task: 'classification',
+		inputs: [224, 224, 3], // MobileNet 입력 크기
+	};
+	classifier = ml5.neuralNetwork(options);
+	
+	// 모델 로드
+	classifier.load('./my-model.json', modelLoaded);
+	
+	
+}
+function modelLoaded() {
+	console.log('Custom TensorFlow.js model loaded in ml5.js!');
+	classifyVideo();
+}
 function setup() {
-	const canvasContainer = document.getElementById('canvas-container');
-	const canvas = createCanvas(640, 480);
-	canvas.parent(canvasContainer);
-
-	// 웹캠 설정
+	createCanvas(640, 480);
+	// 웹캠 비디오 캡처
 	video = createCapture(VIDEO);
-	video.size(224, 224); // MobileNet과 호환되는 크기
+	video.size(640, 480);
 	video.hide();
-
-	// 메타데이터 로드
-	loadMetadata(metadataPath)
-		.then((metadata) => {
-			if (!metadata.classNames || metadata.classNames.length === 0) {
-				throw new Error('메타데이터에 유효한 classNames가 없습니다.');
-			}
-			classNames = metadata.classNames;
-			loadModel();
-		})
-		.catch((error) => {
-			console.error('메타데이터 로드 실패:', error.message);
-			document.getElementById('status').innerText =
-				'메타데이터 로드 실패!';
-		});
 }
 
 function draw() {
-	background(220);
-	image(video, 0, 0, width, height);
+	background(0);
+	image(video, 0, 0);
+	fill(255);
+	textSize(24);
+	textAlign(CENTER);
+	text(label, width / 2, height - 16);
+}
 
-	// 예측 결과 표시
-	fill(0);
-	textSize(32);
-	textAlign(CENTER, CENTER);
-	text(predictionResult, width / 2, height - 40);
+function modelReady() {
+	console.log('Model Loaded!');
+	classifyVideo();
+}
 
-	// 동서남북 도형 표시
-	if (predictionResult.startsWith('동')) {
-		fill(255, 0, 0);
-		ellipse(width / 2 + 100, height / 2, 50, 50); // 동쪽
-	} else if (predictionResult.startsWith('서')) {
-		fill(0, 0, 255);
-		ellipse(width / 2 - 100, height / 2, 50, 50); // 서쪽
-	} else if (predictionResult.startsWith('남')) {
-		fill(0, 255, 0);
-		ellipse(width / 2, height / 2 + 100, 50, 50); // 남쪽
-	} else if (predictionResult.startsWith('북')) {
-		fill(255, 255, 0);
-		ellipse(width / 2, height / 2 - 100, 50, 50); // 북쪽
+function classifyVideo() {
+	// 비디오에서 현재 프레임을 가져와 분류
+	classifier.classify({ image: video }, gotResults);
+}
+
+function gotResults(error, results) {
+	if (error) {
+		console.error(error);
+		return;
 	}
-}
 
-// 메타데이터 로드 함수
-async function loadMetadata(path) {
-	const response = await fetch(path);
-	if (!response.ok) {
-		throw new Error(
-			`메타데이터 파일을 로드할 수 없습니다: ${response.statusText}`
-		);
+	// 결과에서 가장 높은 확률의 라벨 가져오기
+	if (results && results.length > 0) {
+		label = results[0].label;
 	}
-	return response.json();
-}
-
-function loadModel() {
-	classifier = ml5.imageClassifier(modelPath, video, () => {
-		document.getElementById('status').innerText = '모델 로드 완료!';
-		predict();
-	});
-}
-
-function predict() {
-	classifier.classify(video, (error, results) => {
-		if (error) {
-			console.error('예측 오류:', error.message);
-			predictionResult = '예측 실패';
-			return;
-		}
-
-		// 예측 결과 저장
-		const topResult = results[0];
-		predictionResult = `${classNames[topResult.label]} (${(
-			topResult.confidence * 100
-		).toFixed(2)}%)`;
-
-		// 다음 예측 실행
-		predict();
-	});
+	console.log(label);
+	// 다음 프레임에서 다시 예측
+	classifyVideo();
 }
