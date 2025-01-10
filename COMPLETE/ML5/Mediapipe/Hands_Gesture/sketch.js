@@ -37,6 +37,9 @@ function startWebcam() {
 	}
 }
 
+let cur_name = "";
+let old_name = "";
+
 function draw() {
 	background(127); // 배경 색 설정
 	
@@ -47,6 +50,7 @@ function draw() {
 	// 각 랜드마크 좌표를 표시합니다.
 	// 각 랜드마크 좌표의 위치와 번호에 대한 자세한 정보는 아래 URL을 확인하세요:
 	// https://developers.google.com/mediapipe/solutions/vision/hand_landmarker
+
 	if (gestures_results) {
 		if (gestures_results.landmarks) {
 			for (const landmarks of gestures_results.landmarks) {
@@ -64,9 +68,9 @@ function draw() {
 			fill(255, 0, 0);
 			textSize(20);
 
-			let name = gestures_results.gestures[i][0].categoryName; // 제스처 이름
-			let score = gestures_results.gestures[i][0].score; // 제스처 점수
-			let right_or_left = gestures_results.handednesses[i][0].hand; // 왼손 또는 오른손
+			let cur_name = gestures_results.gestures[i][0].categoryName; // 제스처 이름
+			//let score = gestures_results.gestures[i][0].score; // 제스처 점수
+			//let right_or_left = gestures_results.handednesses[i][0].hand; // 왼손 또는 오른손
 			let pos = {
 				x: gestures_results.landmarks[i][0].x * width,
 				y: gestures_results.landmarks[i][0].y * height,
@@ -75,7 +79,12 @@ function draw() {
 			textSize(48);
 			fill(0);
 			textAlign(CENTER, CENTER);
-			text(name, pos.x, pos.y); // 제스처 이름을 화면에 표시
+			text(cur_name, pos.x, pos.y); // 제스처 이름을 화면에 표시
+
+			if (cur_name != old_name) {
+				console.log(cur_name);
+				old_name = cur_name;
+			}
 		}
 	}
 }
