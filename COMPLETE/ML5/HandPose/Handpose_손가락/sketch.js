@@ -1,8 +1,8 @@
 // serialport 라이브러리 인스턴스를 저장할 변수
-let serial;
+//let serial;
 
 // 사용 중인 시리얼 포트 이름 (사용자 환경에 맞게 수정 필요)
-let portName = "/dev/cu.usbmodem101";
+//let portName = "/dev/cu.usbmodem101";
 
 // 아두이노로 보낼 데이터 값을 저장하는 변수
 let outByte = 0;
@@ -20,9 +20,9 @@ function preload() {
 // 초기 설정 함수
 function setup() {
     // 시리얼 포트 초기화
-    serial = new p5.SerialPort(); // serialport 라이브러리의 새 인스턴스 생성
-    serial.on("error", serialError); // 오류 발생 시 호출될 콜백 함수 설정
-    serial.open(portName); // 시리얼 포트 열기
+    //serial = new p5.SerialPort(); // serialport 라이브러리의 새 인스턴스 생성
+    //serial.on("error", serialError); // 오류 발생 시 호출될 콜백 함수 설정
+    //serial.open(portName); // 시리얼 포트 열기
 
     createCanvas(640, 480); // 캔버스 생성
     video = createCapture(VIDEO); // 비디오 캡처 객체 생성
@@ -85,7 +85,7 @@ function fingerCheck() {
         }
 
         console.log("outByte: ", outByte); // 현재 데이터 디버깅 출력
-        serial.write(outByte); // 시리얼 포트로 데이터 전송
+        //serial.write(outByte); // 시리얼 포트로 데이터 전송
     }
 }
 
@@ -97,7 +97,7 @@ function serialError(err) {
 // 스페이스바를 눌렀을 때 시리얼 연결 초기화
 function keyPressed() {
     if (key == " ") {
-        setUpSerial();
+        //setUpSerial();
     }
 }
 
@@ -106,6 +106,6 @@ function readSerial(data) {
     if (data != null) {
         // 시리얼 포트로 데이터를 전송
         let sendToArduino = outByte;
-        writeSerial(sendToArduino);
+        //writeSerial(sendToArduino);
     }
 }
