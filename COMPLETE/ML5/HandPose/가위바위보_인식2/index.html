@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>HandPose Emoji Recognition</title>
+
+		<!-- p5.js, ml5.js 및 Bootstrap -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.2/p5.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.2/addons/p5.dom.min.js"></script>
+		<script src="https://unpkg.com/ml5@0.12.2/dist/ml5.min.js"></script>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+		/>
+
+		<style>
+			#videoCanvas {
+				display: block;
+				margin: 0 auto 20px;
+			}
+
+			.emoji {
+				width: 600px;
+			}
+
+			.btn-emoji {
+				font-size: 24px;
+				margin-right: 8px;
+			}
+
+			.badge {
+				margin-left: 8px;
+			}
+
+			#emojiInputGroup {
+				margin-bottom: 20px;
+			}
+		</style>
+	</head>
+
+	<body class="bg-light">
+		<div class="container py-4">
+			<h1 class="mb-4">🖐 손 모양 인식 프로그램 ✌️</h1>
+
+			<!-- 캔버스 -->
+			<div id="videoCanvas"></div>
+
+			<!-- 이모지 입력 -->
+			<div id="emojiInputGroup" class="input-group emoji">
+				<input
+					id="emojiInput"
+					type="text"
+					class="form-control"
+					placeholder="이모지 (예: 👍, ✋)"
+					maxlength="10"
+				/>
+				<input
+					id="nameInput"
+					type="text"
+					class="form-control"
+					placeholder="손 모양 이름 (예: 엄지)"
+				/>
+				<button id="addCustomButton" class="btn btn-dark">추가</button>
+			</div>
+
+			<!-- 버튼 그룹 -->
+			<div id="defaultButtons" class="d-flex justify-content-start mb-3">
+				<button id="rockButton" class="btn btn-primary btn-emoji">
+					👊 바위
+					<span class="badge bg-secondary" id="rockBadge">0</span>
+				</button>
+				<button id="paperButton" class="btn btn-danger btn-emoji">
+					🖐 보
+					<span class="badge bg-secondary" id="paperBadge">0</span>
+				</button>
+				<button id="scissorsButton" class="btn btn-success btn-emoji">
+					✌️ 가위
+					<span class="badge bg-secondary" id="scissorsBadge">0</span>
+				</button>
+			</div>
+
+			<!-- 사용자 정의 버튼 -->
+			<div
+				id="customButtons"
+				class="d-flex flex-wrap justify-content-start"
+			></div>
+		</div>
+
+		<script src="sketch.js"></script>
+	</body>
+</html>
