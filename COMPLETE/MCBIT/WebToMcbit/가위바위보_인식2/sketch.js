@@ -6,6 +6,7 @@ let knnClassifier = ml5.KNNClassifier();
 let examplesAdded = false;
 let outputLabel = '';
 let warning = '';
+let modelLoding = "모델 로딩중... 잠시만 기다려주세요.";
 const customGestures = {}; // 사용자 정의 손 모양 저장
 
 function setup() {
@@ -62,6 +63,11 @@ function draw() {
 	image(video, 0, 0, width, height);
 	drawKeypoints();
 
+	// 모델 로딩 확인 메시지
+	fill(0, 0, 0);
+	textSize(20);
+	text(modelLoding, 20, height / 2 - 40);
+	
 	// 판단된 이모지와 이름 표시
 	if (outputLabel) {
 		fill(0, 0, 255);
@@ -75,6 +81,7 @@ function draw() {
 }
 
 function modelReady() {
+	modelLoding = '';
 	console.log('Handpose 모델이 준비되었습니다!');
 }
 
